@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scraper Fastdex</title>
+</head>
+
+<body>
+    <h1>Fastdex</h1>
+
+    <h2>A pokedex para consultas rápidas e simples</h2>
+
+    <p>Pesquise pelos seus pokémons preferidos e descubra tipo, peso, etc.</p>
+    <p>
+        Para uma melhor pesquisa, certifique-se de seguir algumas regras:
+    <ul id="list1">
+        <li>O nome do pokémon deve estar correto. Exemplo: ''Pikachu'' ao invés de ''Piakhuc'';</li>
+        <li>O nome do Pokémon deve constar na Poképedia;</li>
+        <li>A lista abaixo da caixa de pesquisa te mostra quais informações aparecerão para você;</li>
+    </ul>
+    <br>
+    Obs.: Alguns pokémons podem estar com os dados corrompidos (ex: Snorlax).
+    </p>
+
+
+    <div id="divSearch">
+        <input type="text" id="search" placeholder="Digite o nome de um pokémon" autofocus>
+        <button id="searchButton" onclick="searchPokepedia(search.value)">Pesquisar</button>
+    </div>
+
+    <ul id="list2">
+        <li id="nb">Nº</li>
+        <li id="ctg">Categoria</li>
+        <li id="tp">Tipo(s)</li>
+        <li id="hgt">Altura</li>
+        <li id="wgt">Peso</li>
+    </ul>
+    <link rel="js" href="index.js">
+</body>
+
+</html>
+<script>
+
+    function searchPokepedia(pokemon) {
+        if (pokemon == "") {
+            alert("Insira o nome do pokémon");
+        } else {
+            fetch(`/pokemon/${pokemon.toLowerCase()}`, {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json"
+                }
+            }).then(function (resposta) {
+                return resposta.json();
+            }).then(function (data) {
+                if(data.number == undefined) {
+                    alert("Pokémon inexistente ou com dados corrompidos");
+                } else {
+                    nb.innerText = data.number;
+                    ctg.innerText = data.category;
+                    tp.innerText = data.type;
+                    hgt.innerText = data.height;
+                    wgt.innerText = data.weight;
+
+                }
+                console.log(`Dados recebidos: ${JSON.stringify(data)}`);
+            }).catch(function (error) {
+                console.log(`#ERRO: ${error}`);
+            });
+        }
+    }
+</script>
